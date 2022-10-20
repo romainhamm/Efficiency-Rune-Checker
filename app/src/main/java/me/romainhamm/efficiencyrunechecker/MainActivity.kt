@@ -1,7 +1,7 @@
 package me.romainhamm.efficiencyrunechecker
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.hoc081098.viewbindingdelegate.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 import me.romainhamm.efficiencyrunechecker.databinding.ActivityMainBinding
