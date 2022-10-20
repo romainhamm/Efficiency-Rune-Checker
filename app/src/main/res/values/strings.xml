@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Efficiency Rune Checker</string>
+    <string name="erc_add_json">Add JSON</string>
+    <string name="erc_parse_json">Parse JSON</string>
 </resources>
