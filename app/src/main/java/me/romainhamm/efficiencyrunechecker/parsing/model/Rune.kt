@@ -54,6 +54,9 @@ data class Rune(
         companion object {
             private val VALUES = values()
             fun getByValue(value: Int) = VALUES.firstOrNull { it.value == value } ?: UNKNOWN
+            fun isMoreCommonType(type: SetType) = VALUES.any {
+                type == DESPAIR || type == DESTROY || type == VIOLENT || type == WILL || type == REVENGE
+            }
         }
     }
 
