@@ -11,7 +11,6 @@ import com.hoc081098.viewbindingdelegate.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import me.romainhamm.efficiencyrunechecker.databinding.ActivityMainBinding
-import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
@@ -38,18 +37,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                             binding.progressBarLayout.isVisible = true
                         }
                         is RuneResult.Success -> {
-                            val otherGroup = state.runeList
-                                .groupBy { it.setType }
-                                .mapValues { (_, g) ->
-                                    val infTo110 = g.associateBy({ 100 }, { g.filter { it.efficiency < 110 }.size })
-                                    val supTo110 = g.associateBy({ 110 }, { g.filter { it.efficiency >= 110 && it.efficiency < 120 }.size })
-                                    val supTo120 = g.associateBy({ 120 }, { g.filter { it.efficiency >= 120 }.size })
-                                    Triple(infTo110, supTo110, supTo120)
-                                }
-
-                            Timber.e("otherGroup $otherGroup state.runeList ${state.runeList.size}}")
                             binding.progressBarLayout.isVisible = false
-                            binding.jsonDisplayText.text = state.toString()
+                            binding.jsonDisplayText.text = state.runeList.toString()
                         }
                     }
                 }

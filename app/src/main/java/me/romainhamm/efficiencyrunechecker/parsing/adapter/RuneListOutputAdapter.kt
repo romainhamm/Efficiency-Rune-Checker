@@ -15,7 +15,8 @@ import javax.inject.Inject
 
 class RuneListOutputAdapter(
     private val elementAdapter: JsonAdapter<RuneOutput>,
-    private val options: JsonReader.Options
+    private val firstLevelOptions: JsonReader.Options,
+    private val mobsOptions: JsonReader.Options,
 ) : JsonAdapter<List<RuneOutput>>() {
 
     class Factory @Inject constructor() : JsonAdapter.Factory {
@@ -28,7 +29,8 @@ class RuneListOutputAdapter(
             val elementAdapter = moshi.adapter<RuneOutput>(elementType)
             return RuneListOutputAdapter(
                 elementAdapter = elementAdapter,
-                options = JsonReader.Options.of("runes")
+                firstLevelOptions = JsonReader.Options.of("unit_list", "runes"),
+                mobsOptions = JsonReader.Options.of("runes")
             )
         }
     }
@@ -36,8 +38,22 @@ class RuneListOutputAdapter(
     override fun fromJson(reader: JsonReader): List<RuneOutput> {
         val sectionContent = mutableListOf<RuneOutput>()
         reader.readObject {
-            when (it.selectName(options)) {
-                0 -> {
+            when (it.selectName(firstLevelOptions)) {
+                0 -> { // unit_list
+                    reader.readArray {
+                        reader.readObject {
+                            when (reader.selectName(mobsOptions)) {
+                                0 -> { // runes
+                                    reader.readArray {
+                                        sectionContent.add(elementAdapter.fromJson(reader) ?: throw Util.unexpectedNull("runes", "runes", reader))
+                                    }
+                                }
+                                -1 -> reader.skipNameAndValue()
+                            }
+                        }
+                    }
+                }
+                1 -> { // runes
                     it.readArray { reader ->
                         sectionContent.add(elementAdapter.fromJson(reader) ?: throw Util.unexpectedNull("runes", "runes", reader))
                     }
