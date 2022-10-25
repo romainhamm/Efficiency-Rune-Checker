@@ -39,15 +39,21 @@ class MainViewModel @Inject constructor(
                             Triple(infTo110, supTo110, supTo120)
                         }
 
+                    // val resultMap = list.entries.sortedBy { it.value.first }.associate { it.toPair() }
+
+                    /*val maxByEffi = list.maxOf { (_, value) ->
+                        value.first.coerceAtLeast(value.second).coerceAtLeast(value.third)
+                    }*/
+
                     val totalSize = list.values.sumOf { it.first + it.second + it.third }
-                    _runeState.value = RuneResult.Success(totalSize, list)
+                    _runeState.value = RuneResult.Success(totalSize, 0, list)
                 }
         }
     }
 }
 
 sealed class RuneResult {
-    data class Success(val totalSize: Int, val runeList: Map<Rune.SetType, Triple<Int, Int, Int>>) : RuneResult()
+    data class Success(val totalSize: Int, val maxByEffi: Int, val runeList: Map<Rune.SetType, Triple<Int, Int, Int>>) : RuneResult()
     data class Error(val throwable: Throwable) : RuneResult()
     object Loading : RuneResult()
     object Empty : RuneResult()

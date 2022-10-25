@@ -105,9 +105,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                             val set2 = radarDataSet110.apply { values = data110 }
                             val set3 = radarDataSet120.apply { values = data120 }
                             val data = RadarData(listOf(set1, set2, set3)).apply {
-                                setValueTextSize(8f)
                                 setDrawValues(false)
-                                setValueTextColor(Color.WHITE)
                             }
 
                             setAxis(labels)
@@ -121,7 +119,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         }
 
         binding.addJsonButton.setOnClickListener { getJsonContract.launch(arrayOf("application/json")) }
-        // binding.parseJsonButton.setOnClickListener { viewModel.readJson() }
     }
 
     private fun initGraph() {
