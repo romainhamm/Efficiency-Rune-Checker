@@ -10,6 +10,7 @@ import kotlinx.coroutines.launch
 import me.romainhamm.efficiencyrunechecker.parsing.model.Rune
 import me.romainhamm.efficiencyrunechecker.parsing.usecase.ReadJsonUseCase
 import timber.log.Timber
+import java.io.InputStream
 import javax.inject.Inject
 
 @HiltViewModel
@@ -20,10 +21,10 @@ class MainViewModel @Inject constructor(
     private val _runeState: MutableStateFlow<RuneResult> = MutableStateFlow(RuneResult.Empty)
     val runeState: StateFlow<RuneResult> = _runeState
 
-    fun readJson() {
+    fun readJson(inputStream: InputStream) {
         viewModelScope.launch {
             _runeState.value = RuneResult.Loading
-            interactor.invoke(ReadJsonUseCase.Params("Neosyder-13183017.json"))
+            interactor.invoke(ReadJsonUseCase.Params(inputStream))
                 .catch {
                     Timber.e("Error $it")
                     _runeState.value = RuneResult.Error(it)
@@ -39,7 +40,6 @@ class MainViewModel @Inject constructor(
                         }
 
                     val totalSize = list.values.sumOf { it.first + it.second + it.third }
-                    Timber.e("totalSize $totalSize")
                     _runeState.value = RuneResult.Success(totalSize, list)
                 }
         }

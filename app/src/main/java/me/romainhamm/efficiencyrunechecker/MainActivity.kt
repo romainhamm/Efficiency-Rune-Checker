@@ -1,9 +1,15 @@
 package me.romainhamm.efficiencyrunechecker
 
+import android.content.Context
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
+import android.provider.DocumentsContract
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.database.getStringOrNull
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
@@ -16,13 +22,55 @@ import com.github.mikephil.charting.formatter.ValueFormatter
 import com.hoc081098.viewbindingdelegate.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import me.romainhamm.efficiencyrunechecker.chart.extensions.initCommonValues
 import me.romainhamm.efficiencyrunechecker.databinding.ActivityMainBinding
+import java.io.FileNotFoundException
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     private val binding by viewBinding(ActivityMainBinding::bind)
     private val viewModel by viewModels<MainViewModel>()
+
+    private val getJsonContract = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri: Uri? ->
+        if (uri == null) {
+            showError("No file selected")
+            return@registerForActivityResult
+        }
+        contentResolver.query(uri, null, null, null, null)?.let { cursor ->
+            if (cursor.moveToFirst()) {
+                val mimeType = cursor.getStringOrNull(cursor.getColumnIndex(DocumentsContract.Document.COLUMN_MIME_TYPE))
+                if (mimeType != null && mimeType.contains("json")) {
+                    try {
+                        contentResolver.openInputStream(uri)?.let {
+                            viewModel.readJson(it)
+                        } ?: run {
+                            showError("Can't open json")
+                        }
+                    } catch (e: FileNotFoundException) {
+                        showError("Can't open json")
+                    }
+                } else {
+                    showError("Please select a valid json")
+                }
+            } else {
+                showError("Please select a valid json")
+            }
+            cursor.close()
+        }
+    }
+
+    private val radarDataSet100 by lazy {
+        RadarDataSet(emptyList(), "100").initCommonValues(Color.rgb(103, 110, 129), Color.rgb(103, 110, 129))
+    }
+
+    private val radarDataSet110 by lazy {
+        RadarDataSet(emptyList(), "110").initCommonValues(Color.rgb(121, 162, 175), Color.rgb(121, 162, 175))
+    }
+
+    private val radarDataSet120 by lazy {
+        RadarDataSet(emptyList(), "120").initCommonValues(Color.rgb(168, 44, 44), Color.rgb(168, 44, 44))
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,79 +101,54 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                                 data120.add(RadarEntry(data.third.toFloat()))
                             }
 
-                            val set1 = RadarDataSet(data100, "100").apply {
-                                color = Color.rgb(103, 110, 129)
-                                fillColor = Color.rgb(103, 110, 129)
-                                setDrawFilled(true)
-                                fillAlpha = 180
-                                lineWidth = 2f
-                                isDrawHighlightCircleEnabled = true
-                                setDrawHighlightIndicators(false)
-                            }
-                            val set2 = RadarDataSet(data110, "110").apply {
-                                color = Color.rgb(121, 162, 175)
-                                fillColor = Color.rgb(121, 162, 175)
-                                setDrawFilled(true)
-                                fillAlpha = 180
-                                lineWidth = 2f
-                                isDrawHighlightCircleEnabled = true
-                                setDrawHighlightIndicators(false)
-                            }
-
-                            val set3 = RadarDataSet(data120, "120").apply {
-                                color = Color.rgb(168, 44, 44)
-                                fillColor = Color.rgb(168, 44, 44)
-                                setDrawFilled(true)
-                                fillAlpha = 180
-                                lineWidth = 2f
-                                isDrawHighlightCircleEnabled = true
-                                setDrawHighlightIndicators(false)
-                            }
-
+                            val set1 = radarDataSet100.apply { values = data100 }
+                            val set2 = radarDataSet110.apply { values = data110 }
+                            val set3 = radarDataSet120.apply { values = data120 }
                             val data = RadarData(listOf(set1, set2, set3)).apply {
                                 setValueTextSize(8f)
                                 setDrawValues(false)
                                 setValueTextColor(Color.WHITE)
                             }
 
+                            setAxis(labels)
                             binding.spiderChart.data = data
                             binding.spiderChart.invalidate()
 
                             binding.spiderChart.animateXY(1400, 1400, Easing.EaseInOutQuad)
-
-                            setAxis(labels)
                         }
                     }
                 }
         }
 
-        binding.addJsonButton.setOnClickListener { }
-        binding.parseJsonButton.setOnClickListener { viewModel.readJson() }
+        binding.addJsonButton.setOnClickListener { getJsonContract.launch(arrayOf("application/json")) }
+        // binding.parseJsonButton.setOnClickListener { viewModel.readJson() }
     }
 
     private fun initGraph() {
-        binding.spiderChart.setBackgroundColor(Color.TRANSPARENT)
-        binding.spiderChart.setTouchEnabled(false)
-        binding.spiderChart.description.isEnabled = false
-        binding.spiderChart.webLineWidth = 1f
-        binding.spiderChart.webColor = Color.LTGRAY
-        binding.spiderChart.webLineWidthInner = 1f
-        binding.spiderChart.webColorInner = Color.LTGRAY
-        binding.spiderChart.webAlpha = 100
-        binding.spiderChart.extraRightOffset = 32f
-        binding.spiderChart.extraLeftOffset = 32f
+        with(binding.spiderChart) {
+            setBackgroundColor(Color.TRANSPARENT)
+            setTouchEnabled(false)
+            description.isEnabled = false
+            webLineWidth = 1f
+            webColor = Color.LTGRAY
+            webLineWidthInner = 1f
+            webColorInner = Color.LTGRAY
+            webAlpha = 100
+            extraRightOffset = 6f
+            extraLeftOffset = 6f
+            yAxis.textColor = Color.WHITE
+            xAxis.textSize = 9f
+            xAxis.textColor = Color.WHITE
+        }
     }
 
     private fun setAxis(labels: List<String>) {
-        binding.spiderChart.yAxis.textColor = Color.WHITE
-
-        val xAxis = binding.spiderChart.xAxis
-        xAxis.textSize = 9f
-        xAxis.valueFormatter = object : ValueFormatter() {
+        binding.spiderChart.xAxis.valueFormatter = object : ValueFormatter() {
             override fun getFormattedValue(value: Float): String {
                 return labels[value.toInt() % labels.size]
             }
         }
-        xAxis.textColor = Color.WHITE
     }
+
+    private fun Context.showError(message: String) = Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 }

@@ -29,7 +29,7 @@ class ReadJsonInteractor @Inject constructor(
         }.flowOn(Dispatchers.IO)
 
     private fun readJson(param: ReadJsonUseCase.Params) = flow {
-        emit(context.assets.open(param.fileName).bufferedReader().use { it.readText() })
+        emit(param.inputStream.bufferedReader().use { it.readText() })
     }.flowOn(Dispatchers.IO)
 
     private fun parseJson(json: String) = flow {

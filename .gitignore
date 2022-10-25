@@ -1,6 +1,4 @@
 # Built application files
-gradlew
-gradlew.*
 gradle-wrapper.jar
 *.apk
 *.aar
