@@ -18,7 +18,6 @@ import javax.inject.Inject
 
 @Bound(ViewModelComponent::class)
 class ReadJsonInteractor @Inject constructor(
-    @ApplicationContext private val context: Context,
     private val moshi: Moshi,
     private val converter: Converter<RuneOutput, Rune>
 ) : ReadJsonUseCase {
