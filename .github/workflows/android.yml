@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
+  apk:
     name: Generate APK
     runs-on: ubuntu-latest
 
