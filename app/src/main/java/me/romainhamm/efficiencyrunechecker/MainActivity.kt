@@ -8,6 +8,7 @@ import android.provider.DocumentsContract
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.database.getStringOrNull
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
@@ -62,15 +63,15 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     }
 
     private val radarDataSet100 by lazy {
-        RadarDataSet(emptyList(), "100").initCommonValues(Color.rgb(103, 110, 129), Color.rgb(103, 110, 129))
+        RadarDataSet(emptyList(), "100").initCommonValues(ContextCompat.getColor(this@MainActivity, R.color.grey_500))
     }
 
     private val radarDataSet110 by lazy {
-        RadarDataSet(emptyList(), "110").initCommonValues(Color.rgb(121, 162, 175), Color.rgb(121, 162, 175))
+        RadarDataSet(emptyList(), "110").initCommonValues(ContextCompat.getColor(this@MainActivity, R.color.yellow_400))
     }
 
     private val radarDataSet120 by lazy {
-        RadarDataSet(emptyList(), "120").initCommonValues(Color.rgb(168, 44, 44), Color.rgb(168, 44, 44))
+        RadarDataSet(emptyList(), "120").initCommonValues(Color.rgb(168, 44, 44))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -126,6 +127,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     private fun initGraph() {
         with(binding.spiderChart) {
+            legend.textColor = ContextCompat.getColor(this@MainActivity, R.color.grey_200)
             setBackgroundColor(Color.TRANSPARENT)
             setTouchEnabled(false)
             description.isEnabled = false
@@ -136,9 +138,9 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             webAlpha = 100
             extraRightOffset = 6f
             extraLeftOffset = 6f
-            yAxis.textColor = Color.WHITE
+            yAxis.textColor = Color.LTGRAY
             xAxis.textSize = 9f
-            xAxis.textColor = Color.WHITE
+            xAxis.textColor = ContextCompat.getColor(this@MainActivity, R.color.grey_200)
         }
     }
 
