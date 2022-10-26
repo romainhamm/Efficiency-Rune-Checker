@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import me.romainhamm.efficiencyrunechecker.parsing.model.Rune
-import me.romainhamm.efficiencyrunechecker.parsing.usecase.ReadJsonUseCase
+import me.romainhamm.efficiencyrunechecker.usecase.ReadJsonUseCase
 import timber.log.Timber
 import java.io.InputStream
 import javax.inject.Inject

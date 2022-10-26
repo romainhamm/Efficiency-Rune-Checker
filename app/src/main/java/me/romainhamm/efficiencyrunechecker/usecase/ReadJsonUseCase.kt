@@ -1,4 +1,4 @@
-package me.romainhamm.efficiencyrunechecker.parsing.usecase
+package me.romainhamm.efficiencyrunechecker.usecase
 
 import me.romainhamm.efficiencyrunechecker.parsing.model.Rune
 import java.io.InputStream

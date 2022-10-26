@@ -6,7 +6,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.DocumentsContract
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.database.getStringOrNull
@@ -22,6 +21,8 @@ import com.github.mikephil.charting.formatter.ValueFormatter
 import com.hoc081098.viewbindingdelegate.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import me.romainhamm.efficiencyrunechecker.activitycontract.SelectFileParams
+import me.romainhamm.efficiencyrunechecker.activitycontract.SelectFileResultContract
 import me.romainhamm.efficiencyrunechecker.chart.extensions.initCommonValues
 import me.romainhamm.efficiencyrunechecker.databinding.ActivityMainBinding
 import java.io.FileNotFoundException
@@ -32,7 +33,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     private val binding by viewBinding(ActivityMainBinding::bind)
     private val viewModel by viewModels<MainViewModel>()
 
-    private val getJsonContract = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri: Uri? ->
+    private val getJsonContract = registerForActivityResult(SelectFileResultContract()) { uri: Uri? ->
         if (uri == null) {
             showError("No file selected")
             return@registerForActivityResult
@@ -119,7 +120,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         }
 
         binding.addJsonButton.setOnClickListener {
-            getJsonContract.launch(arrayOf("application/json"))
+            getJsonContract.launch(SelectFileParams("application/json"))
         }
     }
 

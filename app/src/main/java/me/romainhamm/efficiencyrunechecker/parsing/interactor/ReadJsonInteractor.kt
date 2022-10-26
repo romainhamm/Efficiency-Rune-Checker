@@ -10,8 +10,8 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import me.romainhamm.efficiencyrunechecker.parsing.model.Rune
 import me.romainhamm.efficiencyrunechecker.parsing.outputmodel.RuneOutput
-import me.romainhamm.efficiencyrunechecker.parsing.usecase.ReadJsonUseCase
 import me.romainhamm.efficiencyrunechecker.parsing.util.Converter
+import me.romainhamm.efficiencyrunechecker.usecase.ReadJsonUseCase
 import javax.inject.Inject
 
 @Bound(ViewModelComponent::class)

@@ -1,4 +1,4 @@
-package me.romainhamm.efficiencyrunechecker.parsing.usecase
+package me.romainhamm.efficiencyrunechecker.usecase
 
 import kotlinx.coroutines.flow.Flow
 
