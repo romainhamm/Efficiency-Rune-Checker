@@ -35,7 +35,8 @@ class ReadJsonInteractor @Inject constructor(
 
         val jsonList = (adapter.fromJson(json) ?: emptyList())
             .map(converter)
-            .filter { it.stars == 6 && it.efficiency >= 100 }
+            .filter { it.realRuneStar == 6 && it.efficiency >= 100 }
+
         emit(jsonList)
     }.flowOn(Dispatchers.IO)
 }

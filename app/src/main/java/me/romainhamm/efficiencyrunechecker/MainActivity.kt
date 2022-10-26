@@ -118,7 +118,9 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                 }
         }
 
-        binding.addJsonButton.setOnClickListener { getJsonContract.launch(arrayOf("application/json")) }
+        binding.addJsonButton.setOnClickListener {
+            getJsonContract.launch(arrayOf("application/json"))
+        }
     }
 
     private fun initGraph() {
@@ -142,7 +144,9 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     private fun setAxis(labels: List<String>) {
         binding.spiderChart.xAxis.valueFormatter = object : ValueFormatter() {
             override fun getFormattedValue(value: Float): String {
-                return labels[value.toInt() % labels.size]
+                return if (labels.isNotEmpty())
+                    labels[value.toInt() % labels.size]
+                else value.toString()
             }
         }
     }

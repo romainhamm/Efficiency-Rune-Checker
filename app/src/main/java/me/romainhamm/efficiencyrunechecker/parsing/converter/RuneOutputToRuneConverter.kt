@@ -19,9 +19,9 @@ class RuneOutputToRuneConverter @Inject constructor() : Converter<RuneOutput, Ru
             mainStatEffect = t.mainStatEffect.toStatEffect(),
             innateStatEffect = t.innateStatEffect.toInnateStatEffect(),
             secondaryStatEffect = t.secondaryStatEffect.map { it.toStatSecondaryEffect() },
-            rank = Rune.Rank.getByValue(t.rank),
-            baseRank = Rune.Rank.getByValue(t.baseRank),
-            stars = t.stars
+            quality = Rune.Quality.getByValue(t.quality),
+            baseQuality = Rune.Quality.getByValue(t.baseQuality),
+            runeClass = t.runeClass
         )
     }
 

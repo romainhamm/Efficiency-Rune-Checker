@@ -15,7 +15,7 @@ data class RuneOutput(
     @Json(name = "pri_eff") val mainStatEffect: List<Int>,
     @Json(name = "prefix_eff") val innateStatEffect: List<Int>,
     @Json(name = "sec_eff") val secondaryStatEffect: List<List<Int>>,
-    @Json(name = "rank") val rank: Int,
-    @Json(name = "extra") val baseRank: Int,
-    @Json(name = "class") val stars: Int
+    @Json(name = "rank") val quality: Int,
+    @Json(name = "extra") val baseQuality: Int,
+    @Json(name = "class") val runeClass: Int
 ) : Parcelable

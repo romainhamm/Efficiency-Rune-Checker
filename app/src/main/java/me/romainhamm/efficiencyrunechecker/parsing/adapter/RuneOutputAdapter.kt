@@ -51,9 +51,9 @@ class RuneOutputAdapter(
         var mainStatEffect: List<Int>? = null
         var innateStatEffect: List<Int>? = null
         var secondaryStatEffect: List<List<Int>>? = null
-        var rank: Int? = null
-        var baseRank: Int? = null
-        var stars: Int? = null
+        var quality: Int? = null
+        var baseQuality: Int? = null
+        var runeClass: Int? = null
         reader.readObject {
             when (it.selectName(options)) {
                 0 -> runeId = longAdapter.fromJson(it) ?: throw Util.unexpectedNull("runeId", "rune_id", it)
@@ -73,9 +73,9 @@ class RuneOutputAdapter(
                     }
                     secondaryStatEffect = result
                 }
-                7 -> rank = intAdapter.fromJson(it) ?: throw Util.unexpectedNull("rank", "rank", it)
-                8 -> baseRank = intAdapter.fromJson(it) ?: throw Util.unexpectedNull("baseRank", "extra", it)
-                9 -> stars = intAdapter.fromJson(it) ?: throw Util.unexpectedNull("stars", "class", it)
+                7 -> quality = intAdapter.fromJson(it) ?: throw Util.unexpectedNull("quality", "rank", it)
+                8 -> baseQuality = intAdapter.fromJson(it) ?: throw Util.unexpectedNull("baseQuality", "extra", it)
+                9 -> runeClass = intAdapter.fromJson(it) ?: throw Util.unexpectedNull("runeClass", "class", it)
                 -1 -> {
                     // Unknown name, skip it.
                     it.skipNameAndValue()
@@ -91,9 +91,9 @@ class RuneOutputAdapter(
             mainStatEffect = mainStatEffect ?: throw Util.missingProperty("mainStatEffect", "pri_eff", reader),
             innateStatEffect = innateStatEffect ?: throw Util.missingProperty("innateStatEffect", "prefix_eff", reader),
             secondaryStatEffect = secondaryStatEffect ?: throw Util.missingProperty("secondaryStatEffect", "sec_eff", reader),
-            rank = rank ?: throw Util.missingProperty("rank", "rank", reader),
-            baseRank = baseRank ?: throw Util.missingProperty("baseRank", "extra", reader),
-            stars = stars ?: throw Util.missingProperty("stars", "class", reader),
+            quality = quality ?: throw Util.missingProperty("quality", "rank", reader),
+            baseQuality = baseQuality ?: throw Util.missingProperty("baseQuality", "extra", reader),
+            runeClass = runeClass ?: throw Util.missingProperty("runeClass", "class", reader),
         )
     }
 

@@ -14,28 +14,35 @@ data class Rune(
     val mainStatEffect: StatEffect,
     val innateStatEffect: StatEffect?,
     val secondaryStatEffect: List<StatEffect>,
-    val rank: Rank,
-    val baseRank: Rank,
-    val stars: Int
+    val quality: Quality,
+    val baseQuality: Quality,
+    val runeClass: Int
 ) : Parcelable {
 
     @IgnoredOnParcel
     val efficiency: Double
         get() {
-            var sum = 0.0
+            var ratio = 0.0
+
+            ratio += (mainStatEffect.effectType.mainStatEfficiency[realRuneStar] ?: 1) / (mainStatEffect.effectType.mainStatEfficiency[6] ?: 1).toDouble()
+
             val statEffects = mutableListOf<StatEffect>()
             statEffects += secondaryStatEffect
             innateStatEffect?.let {
                 statEffects += it
             }
-
-            statEffects.forEach { effect ->
-                val max = effect.effectType.subStatEfficiency
-                sum += (effect.value / max)
+            statEffects.forEach {
+                ratio += it.value / (it.effectType.subStatEfficiency[6] ?: 1).toFloat()
             }
 
-            val sumResult = ((sum + 1.0) / 2.8) * 100
-            return (sumResult * 100.0).roundToInt() / 100.0
+            val ratioResult = (ratio / 2.8) * 100
+            return (ratioResult * 100.0).roundToInt() / 100.0
+        }
+
+    @IgnoredOnParcel
+    val realRuneStar: Int
+        get() {
+            return if (Quality.isAncientRune(quality)) runeClass - 10 else runeClass
         }
 
     enum class SlotType(val value: Int) {
@@ -57,13 +64,14 @@ data class Rune(
         }
     }
 
-    enum class Rank(val value: Int) {
+    enum class Quality(val value: Int) {
         COMMON(1), MAGIC(2), RARE(3), HEROIC(4), LEGENDARY(5),
         ANCIENT_COMMON(11), ANCIENT_MAGIC(12), ANCIENT_RARE(13), ANCIENT_HEROIC(14), ANCIENT_LEGENDARY(15), UNKNOWN(10000);
 
         companion object {
             private val VALUES = values()
             fun getByValue(value: Int) = VALUES.firstOrNull { it.value == value } ?: UNKNOWN
+            fun isAncientRune(type: Quality) = VALUES.any { type >= ANCIENT_COMMON }
         }
     }
 }
